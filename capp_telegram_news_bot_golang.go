@@ -94,18 +94,18 @@ func main() {
 			// log.Println("Content:", item.Content)
 			log.Println("=============================")
 
-			log.Println(channel_id)
-			log.Println(bot)
+			// log.Println(channel_id)
+			// log.Println(bot)
 			description, _ := sanhtml.SanitizeString(item.Description)
 			description = PrepareString(description)
 			log.Println("description:", description)
-			// message := tgbotapi.NewMessage(channel_id, description)
-			// message.ParseMode = "HTML"
+			message := tgbotapi.NewMessage(channel_id, description)
+			message.ParseMode = "HTML"
 
-			// _, err = bot.Send(message)
-			// if err != nil {
-			// 	panic(err)
-			// }
+			_, err = bot.Send(message)
+			if err != nil {
+				// panic(err)
+			}
 
 			// time.Parse(layout, item.Published)
 			LastPublishedDateTime = *item.PublishedParsed
