@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -26,6 +27,9 @@ func PrepareString(input string) string {
 }
 
 func main() {
+	cd, _ := os.Getwd()
+	fmt.Println("Current working directory:", cd)
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Ошибка при загрузке файла .env")
@@ -82,7 +86,7 @@ func main() {
 		}
 
 		for _, item := range feed.Items {
-			if (*item.PublishedParsed).Before(LastPublishedDateTime) {
+			if (*item.PublishedParsed).Before(LastPublishedDateTime) || (*item.PublishedParsed).Equal(LastPublishedDateTime) {
 				continue
 			}
 
