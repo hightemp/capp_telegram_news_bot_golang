@@ -6,7 +6,7 @@ build:
 
 build-static:
 	@echo "Building static binary"
-	@go build -ldflags "-s -w" -o $(PROJECT_NAME)_static
+	@CGO_ENABLED=0 go build -ldflags="-s -w -extldflags=-static" -o $(PROJECT_NAME)_static
 
 build-docker:
 	@echo "Building docker image"
