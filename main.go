@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -18,11 +17,8 @@ import (
 )
 
 func PrepareString(input string) string {
-	// Create a regular expression to match repeated characters
 	re := regexp.MustCompile(`\s+`)
-	// Replace repeated characters with a single character
 	output := re.ReplaceAllString(input, " ")
-	// Remove any leading or trailing whitespace
 	output = strings.TrimSpace(output)
 	return output
 }
@@ -106,21 +102,28 @@ func main() {
 			// log.Println(bot)
 			description, _ := sanhtml.SanitizeString(item.Description)
 			description = PrepareString(description)
-			log.Println("description:", description)
-			messageText := html.UnescapeString(description + "\n\n" + item.Link)
+			messageText := html.UnescapeString("<b>" + item.Title + "</b>" + "\n\n" + description + "\n\n" + item.Link)
 
-			log.Println(description)
+			log.Println("messageText:", messageText)
+
 			message := tgbotapi.NewMessage(channel_id, messageText)
+			message.DisableWebPagePreview = true
 			message.ParseMode = "HTML"
 
+		send:
 			_, err = bot.Send(message)
 			if err != nil {
-				// panic(err)
+				log.Println("Error sending bot message:", err)
+				time.Sleep(1 * time.Minute)
+				goto send
 			}
 
-			// time.Parse(layout, item.Published)
 			LastPublishedDateTime = *item.PublishedParsed
-			_ = ioutil.WriteFile("lastdate.txt", []byte(item.Published), 0644)
+			err = os.WriteFile("lastdate.txt", []byte(item.Published), 0644)
+
+			if err != nil {
+				log.Println("Error writing file 'lastdate.txt':", err)
+			}
 		}
 
 		time.Sleep(time.Duration(sleep_hours) * time.Hour)
