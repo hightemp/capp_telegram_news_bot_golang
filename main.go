@@ -110,12 +110,9 @@ func main() {
 			message.DisableWebPagePreview = true
 			message.ParseMode = "HTML"
 
-		send:
 			_, err = bot.Send(message)
 			if err != nil {
 				log.Println("Error sending bot message:", err)
-				time.Sleep(1 * time.Minute)
-				goto send
 			}
 
 			LastPublishedDateTime = *item.PublishedParsed
